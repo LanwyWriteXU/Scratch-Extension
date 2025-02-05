@@ -1016,7 +1016,7 @@ function createJsonResponse(fileName, content, format) {
 
   // --- It's all prefixes up here --- qwq
 
-  class CyberexplorerToolboxWithDynamicJoin {
+  class CyberexplorerToolbox {
     constructor(runtime) {
       this.runtime = runtime;
       this.databases = {};
