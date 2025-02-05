@@ -490,7 +490,7 @@ function createJsonResponse(fileName, content, format) {
       });
     }
     //CCW l10n Format
-    
+
     function translate(Blockly, key) {
       return Blockly.ScratchMsgs.translate(key);
     }
@@ -1883,5 +1883,5 @@ function createJsonResponse(fileName, content, format) {
     }
   }
 
-  Scratch.extensions.register(new CyberexplorerToolboxWithDynamicJoin(Scratch.vm.runtime));
+  Scratch.extensions.register(new CyberexplorerToolbox(Scratch.vm.runtime));
 })(Scratch);
