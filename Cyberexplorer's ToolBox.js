@@ -29,6 +29,7 @@ Scratch.translate.setup({
       "_Get current database size": "当前数据库大小",
       "_Is database [databaseName] exists": "名为 [databaseName] 的数据库是否存在",
       "_Get all key-value pairs": "所有键值对",
+      "_Get all database names": "所有的数据库",
       "_Create new database [databaseName]": "创建新数据库 [databaseName]",
       "_Delete database [databaseName]": "删除数据库 [databaseName]",
       "_Operation": "操作",
@@ -99,6 +100,7 @@ Scratch.translate.setup({
       "_uneditable": "不可编辑",
       "_textBlock": "文本",
       "_password": "密码",
+      "_set text align of input [id] to [ALIGN]": "设置输入框 [id] 的对齐模式为 [ALIGN]",
       "_left": "左对齐",
       "_center": "中对齐",
       "_right": "右对齐",
@@ -1313,6 +1315,8 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
       this.runtime = runtime;
       this.databases = {};
       this.dbName = DB_NAME;
+      this.MouseWheelSpeed = 0; 
+      this.wheelTimer = null;
       initExpandableBlocks(this);
     }
 
@@ -1441,6 +1445,13 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("get number of keys"),
             blockIconURI: IDB_ICON
+          },
+          {
+            opcode: "getAllDatabaseNames",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("Get all database names"),
+            blockIconURI: IDB_ICON,
+            hideFromPalette: true
           },
           {
             opcode: "checkIfDatabaseExists",
@@ -1856,6 +1867,23 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
             opcode: "createInput"
           },
           {
+            opcode: "setInputTextAlign",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set text align of input [id] to [ALIGN]"),
+            blockIconURI: INPUT_ICON,
+            arguments: {
+              id: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "i"
+              },
+              ALIGN: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "textAlignOptions",
+                defaultValue: "left"
+              }
+            }
+          },
+          {
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("delete input [id]"),
             blockIconURI: INPUT_ICON,
@@ -2112,6 +2140,11 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
             { text: Scratch.translate("background"), value: "background" },
             { text: Scratch.translate("css"), value: "css" }
           ],
+          textAlignOptions: [
+            { text: Scratch.translate("left"), value: "left" },
+            { text: Scratch.translate("center"), value: "center" },
+            { text: Scratch.translate("right"), value: "right" }
+          ],
           readOptions: [
             { text: Scratch.translate("editable"), value: "editable" },
             { text: Scratch.translate("uneditable"), value: "uneditable" }
@@ -2305,6 +2338,24 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
           resolve();
         };
         request.onerror = () => reject(request.error);
+      });
+    }
+
+    getAllDatabaseNames() {
+      return new Promise((resolve, reject) => {
+        const dbNames = [];
+        const request = indexedDB.databases();
+        request.onsuccess = () => {
+          const dbList = request.result;
+          for (let i = 0; i < dbList.length; i++) {
+            dbNames.push(dbList[i].name);
+          }
+          resolve(dbNames);
+        };
+        request.onerror = () => {
+          console.error('Error retrieving database names:', request.error);
+          reject(request.error);
+        };
       });
     }
 
@@ -2912,6 +2963,13 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
       }
     }
 
+    setInputTextAlign(args) {
+      const { id, ALIGN } = args;
+      const input = document.getElementById(`input-${id}`);
+      if (!input) return;
+      input.style.textAlign = ALIGN;
+    }
+
     getInputProperty(args) {
       const { id, type } = args;
       const input = document.getElementById(`input-${id}`);
@@ -3020,7 +3078,7 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
     }
 
     getMouseWheelSpeed() {
-      return this.MouseWheel;
+      return this.MouseWheelSpeed;
     }
 
     setInputProperty(args) {
@@ -3106,12 +3164,24 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
         this.keypresslist[event.code]; 
       });
 
+      // document.addEventListener("wheel", (e) => {
+      //   this.MouseWheel = e.deltaY * -3; 
+      //   clearTimeout(this.timer);
+      //   this.timer = setTimeout(() => {
+      //     this.MouseWheel = 0; 
+      //   }, 30);
+      // });
+
       document.addEventListener("wheel", (e) => {
-        this.MouseWheel = e.deltaY * -3; 
-        clearTimeout(this.timer);
-        this.timer = setTimeout(() => {
-          this.MouseWheel = 0; 
-        }, 30);
+        this.MouseWheelSpeed = e.deltaY * -3 ; 
+  
+        if (this.wheelTimer) {
+          clearTimeout(this.wheelTimer);
+        }
+  
+        this.wheelTimer = setTimeout(() => {
+          this.MouseWheelSpeed = 0;
+        }, 100);
       });
     }
   }
