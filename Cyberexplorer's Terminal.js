@@ -9,7 +9,7 @@
   
     Scratch.translate.setup({
         "zh": {
-            "_terminal.extName": "终端",
+            "_terminal.extName": "赛博猫猫的终端",
             "_terminal.closeTerminal": "关闭终端",
             "_terminal.clear": "清空终端",
             "_terminal.deleteLastOutput": "删除上一条打印内容",
@@ -18,6 +18,8 @@
             "_terminal.printColored": "输出 [color] [message]",
             "_terminal.getLastInput": "用户输入",
             "_terminal.openConsole": "打开终端",
+            "_terminal.getAllContent": "获取终端所有内容",
+            "_terminal.getAllContentAsArray": "获取终端所有打印的文本内容作为数组",
             "_when": "当 [CONDITION] 为真"
         }
     });
@@ -197,7 +199,16 @@
             content.innerHTML = '';
         }
     }
-  
+
+    function getAllTerminalContent() {
+        let allText = '';
+        const messages = content.querySelectorAll('div');
+        messages.forEach(function(message) {
+            allText += message.textContent + '\n';
+        });
+        return allText.trim();
+    }
+
     class cyberTerminal {
         getInfo() {
             return {
@@ -288,6 +299,16 @@
                             }
                         }
                     },
+                    {
+                        opcode: 'getAllTerminalContent',
+                        blockType: BlockType.REPORTER,
+                        text: Scratch.translate('terminal.getAllContent')
+                    },
+                    {
+                        opcode: 'getAllTerminalContentAsArray',
+                        blockType: BlockType.REPORTER,
+                        text: Scratch.translate('terminal.getAllContentAsArray')
+                    },
                 ],
                 menus: {
                     outputLevel: ['log', 'warn', 'error']
@@ -341,6 +362,17 @@
   
         openConsole() {
             terminalWindow.style.display = 'block';
+        }
+            
+        getAllTerminalContent() {
+            return getAllTerminalContent();
+        }
+        
+        getAllTerminalContentAsArray() {
+            const allText = content.innerText; 
+            const messages = allText.split(/[\n\r]+/);
+            const trimmedMessages = messages.map(message => message.trim()); 
+            return JSON.stringify(trimmedMessages); 
         }
     }
   
