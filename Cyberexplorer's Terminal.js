@@ -407,7 +407,7 @@
                         arguments: {
                             json: {
                                 type: ArgumentType.STRING,
-                                defaultValue: '{}'
+                                defaultValue: '{"SampleButton": "DisplayText","SampleFolder": {"OneButton":"Text","SampleFolder2": {"按钮": "中文也可以！","Folder": {"huh": "这么多下拉框，会坏掉的qwq"}}}}'
                             }
                         }
                     },
