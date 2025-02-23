@@ -1666,7 +1666,7 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
               },
               FORMAT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FORMAT_OPTIONS",
+                menu: "COLOR_FORMAT_OPTIONS",
                 defaultValue: "HSV",
               },
             },
@@ -1691,7 +1691,7 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
               },
               FORMAT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FORMAT_OPTIONS",
+                menu: "COLOR_FORMAT_OPTIONS",
                 defaultValue: "RGB",
               },
             },
@@ -1716,7 +1716,7 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
               },
               FORMAT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FORMAT_OPTIONS",
+                menu: "COLOR_FORMAT_OPTIONS",
                 defaultValue: "HSV",
               },
             },
@@ -2117,7 +2117,7 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
               { text: Scratch.translate("DataURL"), value: "dataURL" }
             ]
           },
-          FORMAT_OPTIONS: {
+          COLOR_FORMAT_OPTIONS: {
             items: [
               { text: Scratch.translate("HSV"), value: "HSV" },
               { text: Scratch.translate("RGB"), value: "RGB" },
