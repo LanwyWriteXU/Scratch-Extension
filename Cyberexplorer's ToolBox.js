@@ -2884,6 +2884,11 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
       newInput.style.border = "none"; // Transparent borderconstructo
       newInput.classList.add("scratch-input-extension"); // Add a specific class name
     
+      // For multi-line inputs, disable resizing
+      if (type === "multi-line") {
+        newInput.style.resize = "none"; // Disable resizing for multi-line textareas
+      }
+
       // Save original styles
       newInput.setAttribute("data-original-styles", JSON.stringify({
         x, y, width, height, fontSize: size
@@ -3187,4 +3192,77 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
   }
 
   Scratch.extensions.register(new CyberexplorerToolbox(Scratch.vm.runtime));
+})(Scratch);
+
+(function (Scratch) {
+  "use strict";
+
+  class WhenKeyPress {
+      constructor(runtime) {
+          this.runtime = runtime;
+          this.keypresslist = {}; 
+          this.lastKey = ""; 
+          this._addevent(); 
+      }
+
+      getInfo() {
+          return {
+              id: "WhenKeyPress",
+              name: "Cyberexplorer's Toolbox Additional",
+              blocks: [
+                  {
+                      opcode: "keys",
+                      blockType: Scratch.BlockType.HAT,
+                      text: "When key [type] pressed",
+                      arguments: {
+                          type: {
+                              type: Scratch.ArgumentType.STRING,
+                              defaultValue: "KeyA"
+                          }
+                      }
+                  },
+                  {
+                      opcode: "getLastKey",
+                      blockType: Scratch.BlockType.REPORTER,
+                      text: "Last key pressed"
+                  },
+                  {
+                      opcode: "getCurrentKeys",
+                      blockType: Scratch.BlockType.REPORTER,
+                      text: "Current keys pressed"
+                  }
+              ]
+          };
+      }
+
+      _addevent() {
+          document.addEventListener("keydown", (event) => {
+              this.keypresslist[event.code] = true;
+              if (this.lastKey === "" || !this.keypresslist[this.lastKey]) {
+                  this.lastKey = event.code; 
+              }
+          });
+          document.addEventListener("keyup", (event) => {
+              delete this.keypresslist[event.code];
+              if (event.code === this.lastKey) {
+                  this.lastKey = ""; 
+              }
+          });
+      }
+
+      keys(args) {
+          const key = args.type; 
+          return !!this.keypresslist[key];
+      }
+
+      getLastKey() {
+          return this.lastKey; 
+      }
+
+      getCurrentKeys() {
+          return JSON.stringify(Object.keys(this.keypresslist)); 
+      }
+  }
+
+  Scratch.extensions.register(new WhenKeyPress(Scratch.vm.runtime));
 })(Scratch);
