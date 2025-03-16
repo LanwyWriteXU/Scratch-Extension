@@ -3209,6 +3209,9 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
           return {
               id: "WhenKeyPress",
               name: "Cyberexplorer's Toolbox Additional",
+              color1: "#2196F3",
+              color2: "#1976D2",
+              color3: "#1565C0",
               blocks: [
                   {
                       opcode: "keys",
