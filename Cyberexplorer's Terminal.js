@@ -23,14 +23,19 @@
             "_terminal.getAllContentAsArray": "获取终端所有打印的文本内容作为数组",
             "_terminal.output": "输出 [outputLevel] [message]",
             "_terminal.printColored": "输出 [color] [message]",
+            "_terminal.setTextProperty": "设置文本属性 [property] 为 [value]",
+            "_terminal.getTextProperty": "获取文本属性 [property]",
+            "_fontSize":"字体大小",
+            "_lineHeight":"行高",
             "_when": "当 [CONDITION] 为真"
         }
     });
-
+    
     // Image constants
     const CLOSE_ICON = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyNy43NDI2MSIgaGVpZ2h0PSIyNy43NDI2MSIgdmlld0JveD0iMCwwLDI3Ljc0MjYxLDI3Ljc0MjYxIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjI2LjEyODY5LC0xNjYuMTI4NjkpIj48ZyBmaWxsPSIjZmYwMDAwIiBzdHJva2U9IiNiMzAwMDAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIj48cGF0aCBkPSJNMjI3LjEyODcsMTgwYzAsLTcuMTA4NjIgNS43NjI2OCwtMTIuODcxMzEgMTIuODcxMzEsLTEyLjg3MTMxYzcuMTA4NjIsMCAxMi44NzEzMSw1Ljc2MjY4IDEyLjg3MTMxLDEyLjg3MTMxYzAsNy4xMDg2MiAtNS43NjI2OCwxMi44NzEzMSAtMTIuODcxMzEsMTIuODcxMzFjLTcuMTA4NjIsMCAtMTIuODcxMzEsLTUuNzYyNjggLTEyLjg3MTMxLC0xMi44NzEzMXoiLz48L2c+PC9nPjwvc3ZnPg==';
 
     const EXT_ICON = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9IjE3MyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgb3ZlcmZsb3c9ImhpZGRlbiI+PGRlZnM+PGNsaXBQYXRoIGlkPSJjbGlwMCI+PHJlY3QgeD0iMTQ1MyIgeT0iNzY4IiB3aWR0aD0iMTczIiBoZWlnaHQ9IjE3MyIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xNDUzIC03NjgpIj48cGF0aCBkPSJNMTQ1MyA4MzEuNTA1QzE0NTMgNzk2LjQzMiAxNDgxLjQzIDc2OCAxNTE2LjUgNzY4TDE1NjIuNSA3NjhDMTU5Ny41NyA3NjggMTYyNiA3OTYuNDMyIDE2MjYgODMxLjUwNUwxNjI2IDg3Ny40OTVDMTYyNiA5MTIuNTY4IDE1OTcuNTcgOTQxIDE1NjIuNSA5NDFMMTUxNi41IDk0MUMxNDgxLjQzIDk0MSAxNDUzIDkxMi41NjggMTQ1MyA4NzcuNDk1WiIgZmlsbD0iIzY2Q0NGRiIgZmlsbC1ydWxlPSJldmVub2RkIi8+PHBhdGggZD0iTTE0NzUgODQzLjY4N0MxNDc1IDgxMy40ODQgMTQ5OS40OCA3ODkgMTUyOS42OSA3ODlMMTU0OS4zMSA3ODlDMTU3OS41MiA3ODkgMTYwNCA4MTMuNDg0IDE2MDQgODQzLjY4N0wxNjA0IDg2Mi4zMTNDMTYwNCA4OTIuNTE2IDE1NzkuNTIgOTE3IDE1NDkuMzEgOTE3TDE1MjkuNjkgOTE3QzE0OTkuNDggOTE3IDE0NzUgODkyLjUxNiAxNDc1IDg2Mi4zMTNaIiBmaWxsPSIjMjFCNUZGIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48cGF0aCBkPSJNMTUxNC41IDgzNi41IDE1MzUuNSA4NDcuMDQ3IDE1MzUuNSA4NTEuOTUzIDE1MTQuNSA4NjIuNSAxNTE0LjUgODU4LjIzMiAxNTI5LjY0IDg1MC43NzVDMTUzMC4yNiA4NTAuNDgxIDE1MzAuODQgODUwLjIyOCAxNTMxLjM3IDg1MC4wMTUgMTUzMS45MSA4NDkuODAyIDE1MzIuMzEgODQ5LjY2MyAxNTMyLjU3IDg0OS41OTggMTUzMi4yOCA4NDkuNTMyIDE1MzEuODUgODQ5LjM4NSAxNTMxLjMgODQ5LjE1NyAxNTMwLjc1IDg0OC45MjggMTUzMC4xOSA4NDguNjgyIDE1MjkuNjQgODQ4LjQyMUwxNTE0LjUgODQwLjkxNSAxNTE0LjUgODM2LjVaIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMy40Mzc1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZmlsbD0iI0ZGRkZGRiIgZmlsbC1ydWxlPSJldmVub2RkIi8+PHBhdGggZD0iTTE1NDEuNSA4NjYuNSAxNTY1LjUgODY2LjUgMTU2NS41IDg3MC41IDE1NDEuNSA4NzAuNSAxNTQxLjUgODY2LjVaIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMy40Mzc1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZmlsbD0iI0ZGRkZGRiIgZmlsbC1ydWxlPSJldmVub2RkIi8+PC9nPjwvc3ZnPg==';
+
 
     // Create terminal window
     let terminalWindow = document.createElement('div');
@@ -98,30 +103,19 @@
     terminalWindow.appendChild(inputBox);
 
     // Create close button
-    
     let closeButton = document.createElement('img');
-    closeButton.src = CLOSE_ICON; 
+    closeButton.src = CLOSE_ICON;
     closeButton.style.position = 'absolute';
     closeButton.style.top = '12px';
     closeButton.style.right = '12px';
     closeButton.style.width = '16px';
     closeButton.style.height = '16px';
+    closeButton.style.fontSize = '16px';
     closeButton.style.cursor = 'pointer';
+    closeButton.style.border = 'none';
+    closeButton.style.backgroundColor = '#333';
+    closeButton.style.color = '#FFF';
     titleBar.appendChild(closeButton);
-  
-    // let closeButton = document.createElement('button');
-    // closeButton.innerText = '×';
-    // closeButton.style.position = 'absolute';
-    // closeButton.style.top = '12px';
-    // closeButton.style.right = '12px';
-    // closeButton.style.width = '16px';
-    // closeButton.style.height = '16px';
-    // closeButton.style.fontSize = '16px';
-    // closeButton.style.cursor = 'pointer';
-    // closeButton.style.border = 'none';
-    // closeButton.style.backgroundColor = '#333';
-    // closeButton.style.color = '#FFF';
-    // titleBar.appendChild(closeButton);
 
     // Close terminal
     closeButton.addEventListener('click', () => {
@@ -203,11 +197,13 @@
     }
 
     // Handle user input
+    let lastUserInput = ""; // 用于存储用户最后输入的内容
     inputBox.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
             const inputText = inputBox.value.trim();
             if (inputText !== '') {
                 addText(inputText, true);
+                lastUserInput = inputText; // 更新用户最后输入的内容
             }
             handleCommand(inputText);
             inputBox.value = '';
@@ -412,6 +408,11 @@
                         }
                     },
                     {
+                        opcode: 'getLastInput',
+                        blockType: BlockType.REPORTER,
+                        text: Scratch.translate('terminal.getLastInput')
+                    },
+                    {
                         opcode: 'getLastButtonPressed',
                         blockType: BlockType.REPORTER,
                         text: Scratch.translate('terminal.getLastButtonPressed')
@@ -456,10 +457,44 @@
                         opcode: 'getAllTerminalContentAsArray',
                         blockType: BlockType.REPORTER,
                         text: Scratch.translate('terminal.getAllContentAsArray')
+                    },
+                    {
+                        opcode: 'setTextProperty',
+                        blockType: BlockType.COMMAND,
+                        text: Scratch.translate('terminal.setTextProperty'),
+                        arguments: {
+                            property: {
+                                type: ArgumentType.STRING,
+                                menu: 'textProperty',
+                                defaultValue: 'fontSize'
+                            },
+                            value: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 16
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'getTextProperty',
+                        blockType: BlockType.REPORTER,
+                        text: Scratch.translate('terminal.getTextProperty'),
+                        arguments: {
+                            property: {
+                                type: ArgumentType.STRING,
+                                menu: 'textProperty',
+                                defaultValue: 'fontSize'
+                            }
+                        }
                     }
                 ],
                 menus: {
-                    outputLevel: ['log', 'warn', 'error']
+                    outputLevel: ['log', 'warn', 'error'],
+                    textProperty: {items: 
+                        [
+                            {text: Scratch.translate('fontSize'), value: "fontSize"},
+                            {text: Scratch.translate('lineHeight'), value:"lineHeight"}
+                        ]
+                    }
                 }
             };
         }
@@ -504,6 +539,10 @@
             return lastButtonPressed;
         }
 
+        getLastInput() {
+            return lastUserInput; // 返回用户最后输入的内容
+        }
+
         outputWithLevel({ outputLevel, message }) {
             const colors = {
                 log: '#FFFFFF',
@@ -530,6 +569,23 @@
             const messages = allText.split(/[\n\r]+/);
             const trimmedMessages = messages.map(message => message.trim());
             return JSON.stringify(trimmedMessages);
+        }
+
+        setTextProperty({ property, value }) {
+            if (property === 'fontSize') {
+                content.style.fontSize = value + 'px';
+            } else if (property === 'lineHeight') {
+                content.style.lineHeight = value;
+            }
+        }
+
+        getTextProperty({ property }) {
+            if (property === 'fontSize') {
+                return parseFloat(content.style.fontSize);
+            } else if (property === 'lineHeight') {
+                return parseFloat(content.style.lineHeight);
+            }
+            return null;
         }
     }
 
