@@ -2644,77 +2644,110 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
     }
 
     blurImage(args) {
-      const imageDataURL = args.IMAGE;
-      const blurValue = args.BLUR;
+      const dataUri = args.IMAGE; 
+      const blur = args.BLUR; 
 
-      // Input validation
-      if (!this.isValidDataURL(imageDataURL)) {
+      if (!this.isValidDataURL(dataUri)) {
         console.error(Scratch.translate("Invalid image dataURL"));
         return Promise.reject(Scratch.translate("Invalid image dataURL"));
       }
-
+    
       return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = imageDataURL;
-        img.crossOrigin = "Anonymous"; // Handle CORS issues
-        img.onload = () => {
+        const image = new Image();
+        image.src = dataUri;
+        image.crossOrigin = "Anonymous"; 
+        image.onload = function() {
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-
-          // Apply blur effect
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const blurredImageData = this.applyBlur(imageData, blurValue);
-          ctx.putImageData(blurredImageData, 0, 0);
-
-          // Convert canvas to dataURL
+          canvas.width = image.width;
+          canvas.height = image.height;
+    
+          ctx.filter = "blur(" + blur + "px)";
+          ctx.drawImage(image, 0, 0, image.width, image.height);
+    
           resolve(canvas.toDataURL());
         };
-        img.onerror = () => {
+        image.onerror = function() {
           console.error("Failed to load image dataURL");
           reject("Failed to load image dataURL");
         };
       });
     }
+    
 
-    applyBlur(imageData, blurValue) {
-      const width = imageData.width;
-      const height = imageData.height;
-      const pixels = imageData.data;
-      const blurredPixels = new Uint8ClampedArray(pixels.length);
+    // old blurImage
+    // blurImage(args) {
+    //   const imageDataURL = args.IMAGE;
+    //   const blurValue = args.BLUR;
 
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          const index = (y * width + x) * 4;
-          let r = 0, g = 0, b = 0, a = 0;
-          let count = 0;
+    //   // Input validation
+    //   if (!this.isValidDataURL(imageDataURL)) {
+    //     console.error(Scratch.translate("Invalid image dataURL"));
+    //     return Promise.reject(Scratch.translate("Invalid image dataURL"));
+    //   }
 
-          for (let ky = -blurValue; ky <= blurValue; ky++) {
-            for (let kx = -blurValue; kx <= blurValue; kx++) {
-              const nx = x + kx;
-              const ny = y + ky;
-              if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-                const nindex = (ny * width + nx) * 4;
-                r += pixels[nindex];
-                g += pixels[nindex + 1];
-                b += pixels[nindex + 2];
-                a += pixels[nindex + 3];
-                count++;
-              }
-            }
-          }
+    //   return new Promise((resolve, reject) => {
+    //     const img = new Image();
+    //     img.src = imageDataURL;
+    //     img.crossOrigin = "Anonymous"; // Handle CORS issues
+    //     img.onload = () => {
+    //       const canvas = document.createElement("canvas");
+    //       const ctx = canvas.getContext("2d");
+    //       canvas.width = img.width;
+    //       canvas.height = img.height;
+    //       ctx.drawImage(img, 0, 0);
 
-          blurredPixels[index] = r / count;
-          blurredPixels[index + 1] = g / count;
-          blurredPixels[index + 2] = b / count;
-          blurredPixels[index + 3] = a / count;
-        }
-      }
+    //       // Apply blur effect
+    //       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    //       const blurredImageData = this.applyBlur(imageData, blurValue);
+    //       ctx.putImageData(blurredImageData, 0, 0);
 
-      return new ImageData(blurredPixels, width, height);
-    }
+    //       // Convert canvas to dataURL
+    //       resolve(canvas.toDataURL());
+    //     };
+    //     img.onerror = () => {
+    //       console.error("Failed to load image dataURL");
+    //       reject("Failed to load image dataURL");
+    //     };
+    //   });
+    // }
+
+    // applyBlur(imageData, blurValue) {
+    //   const width = imageData.width;
+    //   const height = imageData.height;
+    //   const pixels = imageData.data;
+    //   const blurredPixels = new Uint8ClampedArray(pixels.length);
+
+    //   for (let y = 0; y < height; y++) {
+    //     for (let x = 0; x < width; x++) {
+    //       const index = (y * width + x) * 4;
+    //       let r = 0, g = 0, b = 0, a = 0;
+    //       let count = 0;
+
+    //       for (let ky = -blurValue; ky <= blurValue; ky++) {
+    //         for (let kx = -blurValue; kx <= blurValue; kx++) {
+    //           const nx = x + kx;
+    //           const ny = y + ky;
+    //           if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+    //             const nindex = (ny * width + nx) * 4;
+    //             r += pixels[nindex];
+    //             g += pixels[nindex + 1];
+    //             b += pixels[nindex + 2];
+    //             a += pixels[nindex + 3];
+    //             count++;
+    //           }
+    //         }
+    //       }
+
+    //       blurredPixels[index] = r / count;
+    //       blurredPixels[index + 1] = g / count;
+    //       blurredPixels[index + 2] = b / count;
+    //       blurredPixels[index + 3] = a / count;
+    //     }
+    //   }
+
+    //   return new ImageData(blurredPixels, width, height);
+    // }
 
     getDominantColor(args) {
       const imageDataURL = args.IMAGE;
