@@ -2646,12 +2646,12 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
     blurImage(args) {
       const dataUri = args.IMAGE; 
       const blur = args.BLUR; 
-
+    
       if (!this.isValidDataURL(dataUri)) {
         console.error(Scratch.translate("Invalid image dataURL"));
         return Promise.reject(Scratch.translate("Invalid image dataURL"));
       }
-    
+      
       return new Promise((resolve, reject) => {
         const image = new Image();
         image.src = dataUri;
@@ -2659,13 +2659,20 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
         image.onload = function() {
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
-          canvas.width = image.width;
-          canvas.height = image.height;
-    
-          ctx.filter = "blur(" + blur + "px)";
-          ctx.drawImage(image, 0, 0, image.width, image.height);
-    
-          resolve(canvas.toDataURL());
+          canvas.width = image.width * 2;
+          canvas.height = image.height * 2;
+          
+          ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+          
+          const blurCanvas = document.createElement("canvas");
+          const blurCtx = blurCanvas.getContext("2d");
+          blurCanvas.width = canvas.width;
+          blurCanvas.height = canvas.height;
+          
+          blurCtx.filter = "blur(" + blur + "px)";
+          blurCtx.drawImage(canvas, 0, 0, blurCanvas.width, blurCanvas.height);
+          
+          resolve(blurCanvas.toDataURL());
         };
         image.onerror = function() {
           console.error("Failed to load image dataURL");
@@ -2673,6 +2680,7 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
         };
       });
     }
+    
     
 
     // old blurImage
@@ -2915,6 +2923,7 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
       newInput.style.zIndex = 1000; // Ensure it appears above other elements
       newInput.style.backgroundColor = "transparent"; // Transparent background
       newInput.style.border = "none"; // Transparent borderconstructo
+      newInput.style.outline = "none"; // Remove outline on focus
       newInput.classList.add("scratch-input-extension"); // Add a specific class name
     
       // For multi-line inputs, disable resizing
@@ -2929,6 +2938,12 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
     
       const stageParent = this.runtime.renderer.canvas.parentElement;
       stageParent.appendChild(newInput);
+
+      newInput.addEventListener("focus", function() {
+        this.style.backgroundColor = "transparent";
+        this.style.border = "none";
+        // 可以添加其他聚焦时的样式设置
+      });
     
       // Immediately adapt to current stage size
       this._adaptInputsToStage();
