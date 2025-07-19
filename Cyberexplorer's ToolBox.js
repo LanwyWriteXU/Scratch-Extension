@@ -119,7 +119,8 @@ Scratch.translate.setup({
       "_css": "CSS",
       "_getStageHeight": "舞台分辨率高",
       "_getStageWidth": "舞台分辨率宽",
-      "_setInputAdaptation [type]": "设置自适应为 [type]"
+      "_setInputAdaptation [type]": "设置自适应为 [type]",
+      "_scollTop":"滚动位置"
   },
   "en": {
       "_Cyberexplorer's Toolbox": "Cyberexplorer's Toolbox",
@@ -232,7 +233,8 @@ Scratch.translate.setup({
       "_css": "CSS",
       "_getStageHeight": "Get stage height",
       "_getStageWidth": "Get stage width",
-      "_setInputAdaptation [type]": "Set input adaptation to [type]"
+      "_setInputAdaptation [type]": "Set input adaptation to [type]",
+      "_scrollTop": "Scroll Top"
   },
   "ru": {
       "_Cyberexplorer's Toolbox": "Набор инструментов Cyberexplorer",
@@ -345,7 +347,8 @@ Scratch.translate.setup({
       "_css": "CSS",
       "_getStageHeight": "Получить высоту сцены",
       "_getStageWidth": "Получить ширину сцены",
-      "_setInputAdaptation [type]": "Установить адаптацию ввода [type]"
+      "_setInputAdaptation [type]": "Установить адаптацию ввода [type]",
+      "_scrollTop": "Позиция прокрутки"
   },
   "la": {
       "_Cyberexplorer's Toolbox": "Cyberexplorer's Toolbox",
@@ -458,7 +461,8 @@ Scratch.translate.setup({
       "_css": "CSS",
       "_getStageHeight": "Scenam altitudinem obtinere",
       "_getStageWidth": "Scenam latitudinem obtinere",
-      "_setInputAdaptation [type]": "Inputum adaptationem ad [type] ponere"
+      "_setInputAdaptation [type]": "Inputum adaptationem ad [type] ponere",
+      "_scrollTop": "Positio Scrolling"
   },
   "ja": {
       "_Cyberexplorer's Toolbox": "サイバーエクスプローラーのツールボックス",
@@ -571,7 +575,8 @@ Scratch.translate.setup({
       "_css": "CSS",
       "_getStageHeight": "ステージの高さを取得する",
       "_getStageWidth": "ステージの幅を取得する",
-      "_setInputAdaptation [type]": "入力の適応を [type] に設定する"
+      "_setInputAdaptation [type]": "入力の適応を [type] に設定する",
+      "_scrollTop": "スクロール位置"
   },
   "zh-tw": {
       "_Cyberexplorer's Toolbox": "賽博貓貓的工具箱",
@@ -684,7 +689,8 @@ Scratch.translate.setup({
       "_css": "CSS",
       "_getStageHeight": "舞台分辨率高",
       "_getStageWidth": "舞台分辨率寬",
-      "_setInputAdaptation [type]": "設置自適應為 [type]"
+      "_setInputAdaptation [type]": "設置自適應為 [type]",
+      "_scrollTop": "捲動位置"
   }
 });
 
@@ -2133,6 +2139,7 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
             { text: Scratch.translate("color"), value: "color" },
             { text: Scratch.translate("prompt"), value: "prompt" },
             { text: Scratch.translate("font size"), value: "size" },
+            { text: Scratch.translate("scollTop"), value: "scrollTop" },
             { text: Scratch.translate("x position"), value: "x" },
             { text: Scratch.translate("y position"), value: "y" },
             { text: Scratch.translate("width"), value: "width" },
@@ -3029,27 +3036,29 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
       if (!input) return "";
       switch (type) {
         case "content":
-          return input.value;
+            return input.value;
         case "color":
-          return input.style.color;
+            return input.style.color;
         case "prompt":
-          return input.placeholder;
+            return input.placeholder;
         case "size":
-          return parseFloat(input.style.fontSize);
+            return parseFloat(input.style.fontSize);
         case "x":
-          return parseFloat(input.style.left);
+            return parseFloat(input.style.left);
         case "y":
-          return parseFloat(input.style.top);
+            return parseFloat(input.style.top);
         case "width":
-          return parseFloat(input.style.width);
+            return parseFloat(input.style.width);
         case "height":
-          return parseFloat(input.style.height);
+            return parseFloat(input.style.height);
         case "background":
-          return input.style.backgroundColor;
+            return input.style.backgroundColor;
         case "css":
-          return input.getAttribute("style");
+            return input.getAttribute("style");
+        case "scrollTop":
+            return input.scrollTop;
         default:
-          return "";
+            return "";
       }
     }
 
@@ -3139,38 +3148,44 @@ const INPUT_ICON = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTczIiBoZWlnaHQ9Ij
       const input = document.getElementById(`input-${id}`);
       if (!input) return;
       switch (type) {
-        case "content":
-          input.value = text; 
-          break;
-        case "color":
-          input.style.color = text; 
-          break;
-        case "prompt":
-          input.placeholder = text; 
-          break;
-        case "size":
-          input.style.fontSize = `${text}px`; 
-          break;
-        case "x":
-          input.style.left = `${text}px`; 
-          break;
-        case "y":
-          input.style.top = `${text}px`; 
-          break;
-        case "width":
-          input.style.width = `${text}px`; 
-          break;
-        case "height":
-          input.style.height = `${text}px`; 
-          break;
-        case "background":
-          input.style.backgroundColor = text;
-          break;
-        case "css":
-          input.setAttribute("style", text); 
-          break;
+          case "content":
+              input.value = text;
+              break;
+          case "color":
+              input.style.color = text;
+              break;
+          case "prompt":
+              input.placeholder = text;
+              break;
+          case "size":
+              input.style.fontSize = `${text}px`;
+              break;
+          case "x":
+              input.style.left = `${text}px`;
+              break;
+          case "y":
+              input.style.top = `${text}px`;
+              break;
+          case "width":
+              input.style.width = `${text}px`;
+              break;
+          case "height":
+              input.style.height = `${text}px`;
+              break;
+          case "background":
+              input.style.backgroundColor = text;
+              break;
+          case "css":
+              input.setAttribute("style", text);
+              break;
+          case "scrollTop":
+              if (input.scrollHeight > input.clientHeight) {
+                  input.scrollTop = text;
+              }
+              break;
       }
-    }
+  }
+  
 
     setInputReadability(args) {
       const { id, read } = args;
